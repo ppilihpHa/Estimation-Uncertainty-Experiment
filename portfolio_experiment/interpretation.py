@@ -201,7 +201,7 @@ def check_results_realistic(returns: pd.DataFrame, rebalances: pd.DataFrame, dia
 def analyse_Hypotheses(controlled_config: ControlledConfig, realistic_config: RealisticConfig, outputs_dir: Path):
     result_dir = Path(outputs_dir / "results")
     controlled_dir = Path(outputs_dir / "controlled")
-    realistic_dir = Path(outputs_dir / "realistic_mcap_95_fillna")
+    realistic_dir = Path(outputs_dir / "realistic")
     result_dir.mkdir(parents=True, exist_ok=True)
 
     H1_report = analyse_H1(controlled_config, controlled_dir)
