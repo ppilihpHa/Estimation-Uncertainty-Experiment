@@ -11,7 +11,7 @@ from .config import ControlledConfig
 from .dgp import covariance_matrix, draw_returns
 from .estimators import estimate_all
 from .metrics import relative_frobenius_error, true_volatility, weight_error
-from .optimization import gmv_weights_unconstrained
+from .optimization import gmv_weights_unconstrained, gmv_weights_long_only
 
 
 def run_controlled(config: ControlledConfig, output_dir: Path) -> pd.DataFrame:
@@ -32,7 +32,7 @@ def run_controlled(config: ControlledConfig, output_dir: Path) -> pd.DataFrame:
             )
             """Determine Oracle"""
             sigma_true = covariance_matrix(structure, n_assets, config.factor_strength) 
-            oracle = gmv_weights_unconstrained(sigma_true, config.pinv_rcond)
+            oracle = gmv_weights_long_only(sigma_true)
             oracle_volatility = true_volatility(oracle, sigma_true)
             sim_data["scenarios"][scenario_key] = {
                 "sigma_true": sigma_true.copy(),
@@ -56,7 +56,7 @@ def run_controlled(config: ControlledConfig, output_dir: Path) -> pd.DataFrame:
                     }
                     # Both estimators see the identical X^(r): paired design.
                     for estimator, (sigma_hat, shrinkage) in estimate_all(returns).items():
-                        weights = gmv_weights_unconstrained(sigma_hat, config.pinv_rcond) # TODO(lookup) pinv_rcond
+                        weights = gmv_weights_long_only(sigma_hat) 
                         volatility = true_volatility(weights, sigma_true)
                         risk_ratio = volatility / oracle_volatility
                         sim_data["replications"][run_key]["estimators"][estimator] = {

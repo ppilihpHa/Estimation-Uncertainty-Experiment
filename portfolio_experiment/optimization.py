@@ -7,7 +7,7 @@ from scipy.optimize import minimize
 def gmv_weights_unconstrained(sigma: np.ndarray, rcond: float = 1e-10) -> np.ndarray:
     """Closed-form fully-invested GMV weights; short positions are allowed."""
     ones = np.ones(sigma.shape[0])
-    inverse = np.linalg.pinv(sigma, rcond=rcond, hermitian=True) # pinv for singular CovM
+    inverse = np.linalg.pinv(sigma, rcond=rcond, hermitian=True) 
     numerator = inverse @ ones
     denominator = float(ones @ numerator)
     if not np.isfinite(denominator) or abs(denominator) < 1e-14:
@@ -21,7 +21,7 @@ def gmv_weights_long_only(sigma: np.ndarray) -> np.ndarray:
     start = np.full(n_assets, 1.0 / n_assets)
 
     result = minimize(
-        fun=lambda w: float(w @ sigma @ w), # TODO(TBD) transpose
+        fun=lambda w: float(w @ sigma @ w), 
         x0=start,
         method="SLSQP", # optimizer
         bounds=[(0.0, 1.0)] * n_assets,
