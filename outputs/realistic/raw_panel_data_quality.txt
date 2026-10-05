@@ -1,0 +1,62 @@
+=== DATA QUALITY ANALYSIS FOR RAW US PANEL ===
+
+MISSING RETURN DESCRIPTION:
+count    20127.000000
+mean         0.003525
+std          0.029590
+min          0.000000
+25%          0.000000
+50%          0.000391
+75%          0.001410
+max          1.000000
+ZERO RETURN DESCRIPTION:
+count    20118.000000
+mean         0.123402
+std          0.154239
+min          0.000000
+25%          0.017668
+50%          0.057971
+75%          0.179232
+max          1.000000
+ANNUALIZED VOLATILITY DESCRIPTION:
+count    20098.000000
+mean         0.481382
+std          0.645747
+min          0.000000
+25%          0.210985
+50%          0.389630
+75%          0.604789
+max         43.077088
+MCAP AVAILABILITY DESCRIPTION:
+count    20127.00000
+mean         0.99093
+std          0.09070
+min          0.00000
+25%          1.00000
+50%          1.00000
+75%          1.00000
+max          1.00000
+
+ZERO RETURN THRESHOLD COUNTS:
+> 5%: 10735 assets (53.36%)
+> 10%: 7783 assets (38.69%)
+> 20%: 4378 assets (21.76%)
+> 30%: 2290 assets (11.38%)
+> 40%: 1378 assets (6.85%)
+> 50%: 831 assets (4.13%)
+> 75%: 106 assets (0.53%)
+> 90%: 33 assets (0.16%)
+
+MISSING RETURN THRESHOLD COUNTS:
+> 0%: 12893 assets (64.06%)
+> 1%: 757 assets (3.76%)
+> 5%: 275 assets (1.37%)
+> 10%: 98 assets (0.49%)
+> 20%: 41 assets (0.20%)
+> 50%: 12 assets (0.06%)
+
+GENERAL COUNTS:
+Assets in diagnostics: 20127
+Assets with valid zero-return metric: 20118
+Assets with valid missing-return metric: 20127
+Assets without missing returns: 7234

@@ -1,0 +1,7 @@
+N,estimator,rho,rule
+20,ledoit_wolf,0.7003160290366411,True
+20,sample,0.7951185866207433,True
+50,ledoit_wolf,0.790189049015562,True
+50,sample,0.8355735445589417,True
+100,ledoit_wolf,0.8250597220583888,True
+100,sample,0.8494599347463972,True
