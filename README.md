@@ -41,7 +41,7 @@ python run_experiment.py realistic --data ".\panels\US_data_panel_filtered_0.15.
 
 Outputs into `outputs\realistic\`.
 
-*Note*: The main panel is quite large, so for testing purposes there is a cutted version included in `\panels\`.
+*Note*: Input data is not included in the repository, since I don't want to publish non-public data in a public repository. Just copy the path of your own data panel into the `--data` parameter.
 
 ## Evaluate Results
 
