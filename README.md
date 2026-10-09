@@ -1,69 +1,78 @@
-# Zweistufiges Experiment zur Schätzunsicherheit
+# The Impact of Parameter Estimation on the Performance of traditional Portfolio Optimization
 
-Diese grobe Python-Implementierung übersetzt den bisherigen Versuchsplan in zwei getrennte, aber aufeinander abgestimmte Stufen:
+The project includes the python implementation of the two-layered experiment, as well as its results. 
 
-1. **Kontrollierte Monte-Carlo-Analyse:** Die wahre Kovarianzmatrix ist bekannt. Sample Covariance und Ledoit-Wolf werden auf exakt denselben Zufallsziehungen verglichen. Gemessen werden Kovarianzschätzfehler, Gewichtsfehler und der Anstieg des wahren Portfoliorisikos.
-2. **Realistische Rolling-Window-Analyse:** Auf einem Aktienpanel werden monatlich Sample-GMV, Ledoit-Wolf-GMV und 1/N neu gebildet. Gemessen werden Out-of-Sample-Volatilität, Turnover, Sharpe Ratio und kumuliertes Vermögen.
-
-Alle vorläufig festgelegten Entscheidungen sind in `portfolio_experiment/config.py` mit `TODO(TBD)` markiert. Die Implementierung soll Orientierung geben und ist noch kein final eingefrorenes Forschungsdesign.
+In this README, there's a quick explanation for running the experiment yourself, as well as a concise overview of the project.
 
 ## Installation
+
+Install all needed packages in one go.
 
 ```powershell
 python -m pip install -r requirements.txt
 ```
 
-## Schnellstart: kontrollierte Analyse
+## Controlled Monte Carlo Simulation Analysis
 
-Ein kleiner Smoke Run (wenige Sekunden):
+Perform short smoke run (only for testing purposes):
 
 ```powershell
 python run_experiment.py controlled --quick
 ```
 
-Der größere, in der Konfiguration hinterlegte Lauf:
+Perform regular simulation:
 
 ```powershell
 python run_experiment.py controlled
 ```
 
-Ergebnisse werden standardmäßig unter `outputs/controlled/` abgelegt:
+Results are stored in `outputs/controlled/` by default. However, choosing a path is possible via `--output <path>`.
+*I recommend using the default paths.*
 
-- `replications.csv`: eine Zeile je Konfiguration, Replikation und Schätzer
-- `summary.csv`: Mittelwerte und Streuungen nach Konfiguration
-- `prial.csv`: relative Verbesserung des Kovarianzverlusts durch Shrinkage
-- mehrere PNG-Abbildungen für die zentralen Zusammenhänge
+*Note*: Path logic is relative throughout the project, the used Path libary should prevent pathing issues with Mac.
 
-## Realistische Analyse
+## Empirical Rolling-Window Analysis
 
-Die vorhandene Feather-Datei kann so verwendet werden:
+Perform run on a given panel:
 
 ```powershell
-python run_experiment.py realistic --data "..\PortOpt\Data\US_datastream\US_data_panel_filtered_0.15.feather"
+python run_experiment.py realistic --data ".\panels\US_data_panel_filtered_0.15.feather"
 ```
 
-Wichtig: Die Datei ist sehr groß. Der realistische Lauf wurde deshalb nicht vollständig auf dem gesamten Datensatz ausgeführt. Für einen ersten Test empfiehlt sich eine kleinere, repräsentative Feather- oder CSV-Datei mit den Spalten `Date`, `DSCD`, `Return` und optional `MarketCAP`.
+Outputs into `outputs\realistic\`.
 
-## Zentrale Annahmen (vorläufig)
+*Note*: The main panel is quite large, so for testing purposes there is a cutted version included in `\panels\`.
 
-- Kontrollierte Analyse: unbeschränktes GMV mit Vollinvestition; bei singulärer Sample-Kovarianz wird die Moore-Penrose-Pseudoinverse verwendet.
-- DGPs: Identitätsmatrix als Sanity Check und eine einfache Ein-Faktor-Korrelationsstruktur als nicht-triviale Alternative.
-- Informationsstatus: `c = N/T`; die Standardwerte liegen beidseits des kritischen Bereichs `c = 1`.
-- Realistische Analyse: long-only, voll investiert, 504 Handelstage Lookback, 21 Tage Halteperiode und Auswahl nach Marktkapitalisierung.
-- Transaktionskosten werden noch nicht vom Return abgezogen; Turnover wird bereits gemessen. Das ist im Code als offene Erweiterung markiert.
+## Evaluate Results
 
-## Struktur
+Peform the evaluation of the results:
+
+```powershell
+python run_experiment.py evaluation
+```
+
+Evaluates all hypotheses and outputs into `outputs\results\`.
+
+*Note*: Only works if `outputs\controlled\` and `outputs\realistic\` is present.
+
+## Structure
 
 ```text
 portfolio_experiment/
-  config.py       # alle Designparameter und TBDs
-  dgp.py          # bekannte Kovarianzstrukturen und Simulation
-  estimators.py   # Sample und Ledoit-Wolf
-  optimization.py # GMV-Löser
-  metrics.py      # Fehler- und Performance-Maße
-  controlled.py   # Stufe 1
-  realistic.py    # Stufe 2
-run_experiment.py # Kommandozeilen-Einstieg
-tests/            # kleine Plausibilitätstests
+  config.py         # Run calibration
+  dgp.py            # construct synthetic truth  
+  estimators.py     # Sample and Ledoit-Wolf
+  optimization.py   # GMV-optimization
+  metrics.py        # Error and performance metrics
+  preprocessing.py  # Data diagnostics
+  interpretation.py # Hypotheses operationalization
+  controlled.py     # Part A
+  realistic.py      # Part B
+run_experiment.py   # Application entry point
+panels\             # Input files
+outputs\            # Output files 
+README              # Info
 ```
+
+**Important:** `config.py` currently represents the exact calibration used in the final runs.
 
