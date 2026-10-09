@@ -31,6 +31,8 @@ Results are stored in `outputs/controlled/` by default. However, choosing a path
 
 *Note*: Path logic is relative throughout the project, the used Path libary should prevent pathing issues with Mac.
 
+*Note*: Rerunning the experiments will overwrite results. Either copy them away or referr to the repo for the thesis results.
+
 ## Empirical Rolling-Window Analysis
 
 Perform run on a given panel:
