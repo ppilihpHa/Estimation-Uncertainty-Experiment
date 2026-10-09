@@ -123,11 +123,6 @@ def _write_aggregates(results: pd.DataFrame, output_dir: Path) -> None:
 
     summary.to_csv(output_dir / "summary.csv", index=False)
 
-    """PRIAL computation -> uses rel frobernius norm which is not the regular case -> currently not used -> tbd"""
-    #losses = results.groupby(group)["estimation_error"].mean().unstack("estimator")
-    #losses["prial"] = 1.0 - losses["ledoit_wolf"] / losses["sample"]
-    #losses.reset_index().to_csv(output_dir / "prial.csv", index=False)
-
 
 def _write_plots(results: pd.DataFrame, output_dir: Path) -> None:
     thesis_dir = output_dir / "Thesis_sources"

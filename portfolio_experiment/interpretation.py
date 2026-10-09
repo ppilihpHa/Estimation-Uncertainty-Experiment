@@ -11,7 +11,7 @@ def check_results_controlled(config : ControlledConfig, outpath : Path, sim_data
     """Structural checks"""
 
     expected_estimators = {"sample", "ledoit_wolf"}
-    assert set(results["estimator"].unique()) == expected_estimators # check whether expected estimators are used
+    assert set(results["estimator"].unique()) == expected_estimators 
 
     expected_rows = (
         len(config.covariance_structures) *
@@ -20,7 +20,7 @@ def check_results_controlled(config : ControlledConfig, outpath : Path, sim_data
         len(expected_estimators) * 
         config.replications
     )
-    assert len(results) == expected_rows # check whether number of results is correct
+    assert len(results) == expected_rows 
 
     paired_counts = (
         results.groupby([
@@ -31,7 +31,7 @@ def check_results_controlled(config : ControlledConfig, outpath : Path, sim_data
             "replication"
         ])["estimator"].nunique()
     )
-    assert (paired_counts == len(expected_estimators)).all() # check whether each replication has every estimator
+    assert (paired_counts == len(expected_estimators)).all() 
 
     key = [
         "covariance_structure",
@@ -41,7 +41,7 @@ def check_results_controlled(config : ControlledConfig, outpath : Path, sim_data
         "replication",
         "estimator"
     ]
-    assert not results.duplicated(key).any() # check whether results are stored multiple times
+    assert not results.duplicated(key).any() 
 
     """Numerical checks"""
 
@@ -50,11 +50,11 @@ def check_results_controlled(config : ControlledConfig, outpath : Path, sim_data
         "decision_error",
         "risk_increment"
     ]
-    assert np.isfinite(results[numeric_cols].to_numpy()).all() # check whether any numerical values are missing
+    assert np.isfinite(results[numeric_cols].to_numpy()).all() 
 
-    assert (results["risk_increment"] >= -1e-10).all() # check whether every risk-increment is positive 
-    assert (results["estimation_error"] >= 0).all() # check whether every estimation error is postive
-    assert (results["decision_error"] >= 0).all() # check whether every decision error is positive
+    assert (results["risk_increment"] >= -1e-10).all()
+    assert (results["estimation_error"] >= 0).all() 
+    assert (results["decision_error"] >= 0).all()
 
     """Numerical scenario checks"""
 
@@ -63,16 +63,16 @@ def check_results_controlled(config : ControlledConfig, outpath : Path, sim_data
         oracle = scenario["oracle_weights"]
         oracle_vol = scenario["oracle_volatility"]
 
-        assert sigma_true.shape[0] == sigma_true.shape[1] # square sanity check
-        assert np.allclose(sigma_true, sigma_true.T, atol=1e-10) # symmetry sanity check
-        assert np.isfinite(sigma_true).all() # finite sanity check
+        assert sigma_true.shape[0] == sigma_true.shape[1]
+        assert np.allclose(sigma_true, sigma_true.T, atol=1e-10) 
+        assert np.isfinite(sigma_true).all() 
 
-        assert np.linalg.eigvalsh(sigma_true).min() > 0.0 # check whether true covariance is PD
+        assert np.linalg.eigvalsh(sigma_true).min() > 0.0 
 
-        assert np.isclose(oracle.sum(), 1.0, atol=1e-10) # check whether budget constraint holds
-        assert np.isfinite(oracle).all() # finite sanity check
+        assert np.isclose(oracle.sum(), 1.0, atol=1e-10) 
+        assert np.isfinite(oracle).all()
 
-        assert oracle_vol > 0.0 # check whether volatlity is positive
+        assert oracle_vol > 0.0 
 
     """Replication numerical checks"""
 
@@ -81,11 +81,11 @@ def check_results_controlled(config : ControlledConfig, outpath : Path, sim_data
             sigma_hat = est["sigma_hat"]
             weights = est["weights"]
 
-            assert sigma_hat.shape[0] == sigma_hat.shape[1] # square sanity check
-            assert np.allclose(sigma_hat, sigma_hat.T, atol=1e-10) # symmetry sanity check
-            assert np.isfinite(sigma_hat).all() # finite sanity check
+            assert sigma_hat.shape[0] == sigma_hat.shape[1]
+            assert np.allclose(sigma_hat, sigma_hat.T, atol=1e-10) 
+            assert np.isfinite(sigma_hat).all() 
 
-            assert np.linalg.eigvalsh(sigma_hat).min() >= -1e-10 # check whether covariance is PSD
+            assert np.linalg.eigvalsh(sigma_hat).min() >= -1e-10 
 
             assert np.isfinite(weights).all()
             assert np.isclose(weights.sum(), 1.0, atol=1e-8)
@@ -101,7 +101,7 @@ def check_results_realistic(returns: pd.DataFrame, rebalances: pd.DataFrame, dia
         }
         reference = dates_by_strategy[strategies[0]]
         for strategy in strategies[1:]:
-            assert dates_by_strategy[strategy] == reference # each strategy muss have same rebalancing dates for repective N -> comparability
+            assert dates_by_strategy[strategy] == reference 
 
     for n_assets, part in returns.groupby("n_assets"):
         dates_by_strategy = {
@@ -109,27 +109,27 @@ def check_results_realistic(returns: pd.DataFrame, rebalances: pd.DataFrame, dia
         }
         reference = dates_by_strategy[strategies[0]]
         for strategy in strategies[1:]:
-            assert dates_by_strategy[strategy] == reference # each strategy muss have same daily returns for repective N -> comparability 
+            assert dates_by_strategy[strategy] == reference  
 
     assert not returns.duplicated(["date", "n_assets", "strategy"]).any()
     assert not rebalances.duplicated(["rebalance_date", "n_assets", "strategy"]).any()
 
     """Numerical Checks"""
 
-    assert np.isfinite(returns["return"].to_numpy()).all() # no nan in actual returns 
+    assert np.isfinite(returns["return"].to_numpy()).all()  
     for (_, _), part in rebalances.groupby(["n_assets", "strategy"]):
         part = part.sort_values("rebalance_date")
-        assert np.isfinite(part.iloc[1:]["turnover"].to_numpy()).all() # no nans in turnover except first rebalancing date
+        assert np.isfinite(part.iloc[1:]["turnover"].to_numpy()).all() 
 
-    assert (rebalances["concentration"] <= 1.0 + 1e-10).all() # plausible concentration values
+    assert (rebalances["concentration"] <= 1.0 + 1e-10).all() 
     lower_bound = 1.0 / rebalances["n_assets"]
-    assert (rebalances["concentration"] >= lower_bound - 1e-10).all() # plausible concentration values
+    assert (rebalances["concentration"] >= lower_bound - 1e-10).all() 
 
-    assert (rebalances["effective_n"] >= 1.0 - 1e-10).all() # plausible effective n values
-    assert (rebalances["effective_n"] <= rebalances["n_assets"] + 1e-10).all() # plausible effective n values
+    assert (rebalances["effective_n"] >= 1.0 - 1e-10).all() 
+    assert (rebalances["effective_n"] <= rebalances["n_assets"] + 1e-10).all() 
 
-    assert (rebalances["max_weight"] >= -1e-10).all() # plausible weight values
-    assert (rebalances["max_weight"] <= 1.0 + 1e-10).all() # plausible weigh values
+    assert (rebalances["max_weight"] >= -1e-10).all() 
+    assert (rebalances["max_weight"] <= 1.0 + 1e-10).all() 
 
     assert (rebalances["transaction_cost"].dropna() >= 0).all()
 

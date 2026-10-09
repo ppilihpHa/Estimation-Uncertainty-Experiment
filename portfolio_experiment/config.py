@@ -13,10 +13,9 @@ class ControlledConfig:
     replications: int = 1000
     seed: int = 20260831 # reproducability
 
-    # TODO(TBD): justification.
     factor_strength: float = 0.35
 
-    # Pseudoinverse is used because Sample covariance is singular for N > T.
+    # Pseudoinverse for some cases of N > T.
     pinv_rcond: float = 1e-10
 
 

@@ -114,7 +114,7 @@ def run_realistic(panel: pd.DataFrame, config: RealisticConfig, output_dir: Path
                 #continue
                 #test = test.dropna(axis=0, how="any")
                 test = test.fillna(0.0)
-                print("called test.fillna(0.0)")
+                #print("called test.fillna(0.0)")
             if train.shape[0] < 3 or test.empty:
                 continue
             sample = sample_covariance(train.to_numpy())
